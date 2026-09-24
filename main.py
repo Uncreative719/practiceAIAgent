@@ -1,7 +1,10 @@
+import json
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import argparse
+from prompts import system_prompt
+from call_function import available_functions
 
 def main() -> None:
     load_dotenv()
@@ -20,16 +23,23 @@ def main() -> None:
     args = parser.parse_args()
 
     messages = [
+     {"role": "system", "content": system_prompt},
      {"role": "user", "content": args.user_prompt},
     ]
-    response = client.chat.completions.create( messages=messages, model="openrouter/free",)
+    response = client.chat.completions.create( messages=messages, model="openrouter/free", tools=available_functions,)
     if not response.usage:
         raise RuntimeError("API reponse appears to be malformed")
     if args.verbose:
         print(f"User prompt: {args.user_prompt}")
         print(f"Prompt tokens: {response.usage.prompt_tokens}")
         print(f"Response tokens: {response.usage.completion_tokens}")
-    print(f"Response: {response.choices[0].message.content}")
+    message = response.choices[0].message
+    if message.tool_calls:
+        for tool_call in message.tool_calls:
+            function_args = json.loads(tool_call.function.arguments or "{}")
+            print(f"Calling function: {tool_call.function.name}({function_args})")
+    else:
+        print(f"Response: {message.content}")
 
 
 if __name__ == "__main__":

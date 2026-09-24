@@ -1,6 +1,31 @@
 import os
 import config
 
+schema_write_file = {
+    "type": "function",
+    "function": {
+        "name": "write_file",
+        "description": "Write to specified file in a specified directory relative to the working directory. Will create file if it did not already exist",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "directory": {
+                    "type": "string",
+                    "description": "Directory path to write file from, relative to the working directory (default is the working directory itself)",
+                },
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to file within the directory provided",
+                },
+                "content": {
+                    "type": "string",
+                    "description": "Content to be written into the file",
+                },
+            },
+        },
+    },
+}
+
 def write_file(working_directory: str, file_path: str, content: str) -> str:
     try:
         if not os.path.isdir(working_directory):

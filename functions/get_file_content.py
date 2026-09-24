@@ -1,6 +1,27 @@
 import os
 import config
 
+schema_get_file_content = {
+    "type": "function",
+    "function": {
+        "name": "get_file_content",
+        "description": "Read the content of the specified file in a specified directory relative to the working directory",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "directory": {
+                    "type": "string",
+                    "description": "Directory path to read file from, relative to the working directory (default is the working directory itself)",
+                },
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to file within the directory provided",
+                },
+            },
+        },
+    },
+}
+
 def get_file_content(working_directory: str, file_path: str) -> str:
     try:
         if not os.path.isdir(working_directory):
