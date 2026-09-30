@@ -29,17 +29,18 @@ def main() -> None:
     ]
     if args.verbose:
         print(f"User prompt: {args.user_prompt}")
-    final_response_recived: bool = False
+    final_response_received: bool = False
 
     for _ in range(MAX_ITERS):
         try:
             final_response: str | None = generate_content(client, messages, args.verbose)
             if final_response:
+                final_response_received  = True
                 print(f"Final Response: {final_response}")
                 return
         except Exception as e:
             print(f"Error generating content: {e}")
-    if not final_response_recived:
+    if not final_response_received:
         print(f"Max iterations of {MAX_ITERS} reached without final response")
         exit(1)
 
@@ -53,7 +54,6 @@ def generate_content(client: OpenAI, messages: list, verbose: bool) -> str | Non
     message = response.choices[0].message
     messages.append(message)
     if not message.tool_calls:
-        final_response_recived = True
         return message.content
     
     for tool_call in message.tool_calls:
