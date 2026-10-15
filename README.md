@@ -1,0 +1,2 @@
+This is a toy agent created for the purpose of learning how to use AI agents in code.
+Ability to run files have been purposely left out as a precaution but this agent should not be used seriously as-is.
